@@ -27,6 +27,7 @@ export default defineConfig({
 						{ label: 'Обработка команд', slug: 'basics/commands' },
 						{ label: 'Обработка сообщений', slug: 'basics/messages' },
 						{ label: 'Callback Query', slug: 'basics/callback-query' },
+						{ label: 'Справочник по роутингу', slug: 'routing/reference' },
 					],
 				},
 				{
