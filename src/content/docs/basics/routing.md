@@ -63,23 +63,23 @@ TelegramRouter::forBot('main')->onCommand('/start', function(CommandData $data) 
 
 ```php
 use HybridGram\Facades\TelegramRouter;
-use HybridGram\Core\Routing\RouteData\MessageData;
+use HybridGram\Core\Routing\RouteData\TextMessageData;
 
 // Все сообщения
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onMessage(function(TextMessageData $data) {
     $message = $data->message;
     // ...
 });
 
 // Сообщения по паттерну
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onMessage(function(TextMessageData $data) {
     // ...
 }, '*', 'привет'); // Паттерн для проверки текста
 
 // Кастомная проверка через closure
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onMessage(function(TextMessageData $data) {
     // ...
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     return str_contains($data->message, 'hello');
 });
 ```
@@ -127,22 +127,134 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 });
 ```
 
-## Группировка роутов
+## Фильтрация по типу чата
 
-Вы можете группировать роуты с общими атрибутами:
+Роуты могут быть ограничены определенными типами чатов (приватные, группы, супергруппы, каналы).
+
+### Один тип чата
+
+Используйте метод `chatType()` для указания одного типа чата:
 
 ```php
 use HybridGram\Facades\TelegramRouter;
+use HybridGram\Core\Routing\ChatType;
+
+// Роут только для приватных чатов (дефолт для большинства типов)
+TelegramRouter::forBot('main')
+    ->chatType(ChatType::PRIVATE)
+    ->onCommand('/start', function(CommandData $data) {
+        // Обработка только в приватных чатах
+    });
+
+// Роут только для групп
+TelegramRouter::forBot('main')
+    ->chatType(ChatType::GROUP)
+    ->onTextMessage(function(\HybridGram\Core\Routing\RouteData\TextMessageData $data) {
+        // Обработка только в группах
+    });
+```
+
+### Несколько типов чатов
+
+Используйте метод `chatTypes()` для указания нескольких типов чатов:
+
+```php
+use HybridGram\Facades\TelegramRouter;
+use HybridGram\Core\Routing\ChatType;
+
+// Роут работает в приватных чатах и группах
+TelegramRouter::forBot('main')
+    ->chatTypes([ChatType::PRIVATE, ChatType::GROUP])
+    ->onCommand('/help', function(CommandData $data) {
+        // Обработка в приватных чатах и группах
+    });
+
+// Роут работает во всех типах чатов
+TelegramRouter::forBot('main')
+    ->chatTypes(null) // или не указывать для групповых событий
+    ->onMyChatMember(function(ChatMemberUpdatedData $data) {
+        // Обработка во всех типах чатов
+    });
+```
+
+### Умные дефолты
+
+Система автоматически устанавливает разумные дефолты в зависимости от типа роута:
+
+**Роуты, которые по умолчанию работают во всех типах чатов:**
+- `onMyChatMember()` — изменения статуса бота
+- `onChatMember()` — изменения статуса участников
+- `onNewChatTitle()` — изменение названия чата
+- `onNewChatPhoto()` — изменение фото чата
+- `onDeleteChatPhoto()` — удаление фото чата
+- `onPinnedMessage()` — закрепление сообщений
+- `onForumTopicEvent()` — события топиков форума
+- `onGeneralForumTopicEvent()` — события общего топика
+- `onMessageAutoDeleteTimerChanged()` — изменение таймера автоудаления
+- `onBoostAdded()` — добавление буста
+
+**Остальные роуты по умолчанию работают только в приватных чатах:**
+- `onCommand()` — команды
+- `onMessage()` — сообщения
+- `onCallbackQuery()` — callback query
+- И другие...
+
+```php
+// Работает во всех типах чатов (дефолт для MY_CHAT_MEMBER)
+TelegramRouter::onMyChatMember(function(ChatMemberUpdatedData $data) {
+    // Обработка добавления бота в группу/канал
+});
+
+// Работает только в приватных чатах (дефолт для COMMAND)
+TelegramRouter::onCommand('/start', function(CommandData $data) {
+    // Обработка команды
+});
+
+// Явно указать несколько типов для команды
+TelegramRouter::forBot('main')
+    ->chatTypes([ChatType::PRIVATE, ChatType::GROUP])
+    ->onCommand('/admin', function(CommandData $data) {
+        // Команда работает в приватных чатах и группах
+    });
+```
+
+### Типы чатов
+
+Доступные типы чатов:
+
+```php
+use HybridGram\Core\Routing\ChatType;
+
+ChatType::PRIVATE      // Приватные чаты
+ChatType::GROUP        // Группы
+ChatType::SUPERGROUP   // Супергруппы
+ChatType::CHANNEL      // Каналы
+```
+
+## Группировка роутов
+
+Вы можете группировать роуты с общими атрибутами, включая тип чата:
+
+```php
+use HybridGram\Facades\TelegramRouter;
+use HybridGram\Core\Routing\ChatType;
 
 TelegramRouter::group([
-    'botId' => 'main',
+    'for_bot' => 'main',
+    'chat_type' => ChatType::GROUP, // Один тип
     'middlewares' => [AuthTelegramRouteMiddleware::class],
 ], function($router) {
     $router->onCommand('/admin', function(CommandData $data) {
         // ...
     });
-    
-    $router->onCommand('/settings', function(CommandData $data) {
+});
+
+// Или несколько типов
+TelegramRouter::group([
+    'for_bot' => 'main',
+    'chat_type' => [ChatType::PRIVATE, ChatType::GROUP], // Массив типов
+], function($router) {
+    $router->onMessage(function(MessageData $data) {
         // ...
     });
 });

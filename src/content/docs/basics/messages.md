@@ -11,9 +11,9 @@ description: Работа с текстовыми сообщениями от п
 
 ```php
 use HybridGram\Facades\TelegramRouter;
-use HybridGram\Core\Routing\RouteData\MessageData;
+use HybridGram\Core\Routing\RouteData\TextMessageData;
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onMessage(function(TextMessageData $data) {
     $message = $data->message; // Текст сообщения
     $chatId = $data->getChat()->id;
     
