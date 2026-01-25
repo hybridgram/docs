@@ -36,6 +36,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Middleware', slug: 'advanced/middleware' },
 						{ label: 'Состояния (States)', slug: 'advanced/states' },
+						{ label: 'Настройки бота', slug: 'advanced/bot-settings' },
 						{ label: 'Работа с несколькими ботами', slug: 'advanced/multiple-bots' },
 					],
 				},

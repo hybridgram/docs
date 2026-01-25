@@ -124,6 +124,83 @@ TelegramRouter::onAny(function(AnyData $data) {
 ->middleware(LoggingTelegramRouteMiddleware::class);
 ```
 
+### SetLocaleTelegramRouteMiddleware
+
+Автоматически устанавливает локаль Laravel на основе языка пользователя Telegram:
+
+```php
+use HybridGram\Http\Middlewares\SetLocaleTelegramRouteMiddleware;
+
+TelegramRouter::forBot('main')
+    ->onCommand('/start', function(CommandData $data) {
+        // Локаль уже установлена на основе языка пользователя
+        return __('welcome_message');
+    })
+    ->middleware(new SetLocaleTelegramRouteMiddleware(
+        supportedLocales: ['en', 'ru', 'uk', 'pt'],
+        fallbackLocale: 'en'
+    ));
+```
+
+#### Особенности работы
+
+**Нормализация языковых кодов:**
+- Код вида `pt-br` автоматически нормализуется в `pt_br`
+- Поддерживается fallback на базовый язык: `en-gb` → `en`
+
+**Приоритет определения локали:**
+1. Язык пользователя из Telegram (`language_code`)
+2. Fallback на базовый язык (если `en-gb` не поддерживается, но `en` есть — используется `en`)
+3. Fallback-локаль из конфигурации middleware
+4. Если fallback не указан и язык не поддерживается — локаль остаётся без изменений
+
+**Поддерживаемые типы Update:**
+- Message (через `from`)
+- Callback Query (через `from`)
+
+#### Пример с группой роутов
+
+```php
+TelegramRouter::group([
+    'botId' => 'main',
+    'middlewares' => [
+        new SetLocaleTelegramRouteMiddleware(
+            supportedLocales: ['en', 'ru', 'uk'],
+            fallbackLocale: 'en'
+        ),
+    ],
+], function($router) {
+    $router->onCommand('/start', function(CommandData $data) {
+        // Локализованное приветствие
+        return __('telegram.welcome');
+    });
+    
+    $router->onCommand('/help', function(CommandData $data) {
+        // Локализованная справка
+        return __('telegram.help');
+    });
+});
+```
+
+#### Глобальное применение
+
+Для автоматической локализации всех роутов зарегистрируйте middleware глобально:
+
+```php
+// В методе boot() вашего ServiceProvider
+public function boot(): void
+{
+    $middlewareManager = app(\HybridGram\Core\Middleware\MiddlewareManager::class);
+    
+    $middlewareManager->addGlobalMiddleware(
+        new SetLocaleTelegramRouteMiddleware(
+            supportedLocales: config('app.supported_locales', ['en']),
+            fallbackLocale: config('app.fallback_locale', 'en')
+        )
+    );
+}
+```
+
 ## Использование Middleware
 
 ### Для отдельного роута
