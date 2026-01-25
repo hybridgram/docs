@@ -1,0 +1,67 @@
+---
+title: Telegram bot api Laravel package
+description: Высокопроизводительный пакет для создания Telegram ботов на Laravel
+template: splash
+hero:
+  tagline: Высокопроизводительный пакет для создания Telegram ботов на Laravel
+  image:
+    file: ../../../assets/houston.webp
+  actions:
+    - text: Начать работу
+      link: /ru/getting-started/introduction/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/hybridgram/tgbot-laravel
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Особенности
+
+<CardGrid stagger>
+	<Card title="⚡ Высокая производительность" icon="rocket">
+		Использует Go для обработки вебхуков и обеспечивает максимальную производительность
+	</Card>
+	<Card title="🎯 Удобный роутинг" icon="document">
+		Простой и интуитивный API для создания роутов, похожий на Laravel
+	</Card>
+	<Card title="📦 Гибкая конфигурация" icon="setting">
+		Поддержка множества ботов, webhook и polling режимов работы
+	</Card>
+	<Card title="🚀 Асинхронная отправка" icon="zap">
+		Поддержка очередей с приоритетами и автоматическим rate limiting
+	</Card>
+	<Card title="🔄 Состояния (States)" icon="sync">
+		Управление состояниями чата и пользователя для создания диалогов
+	</Card>
+	<Card title="🛡️ Middleware" icon="lock">
+		Гибкая система middleware для авторизации, логирования и контроля доступа
+	</Card>
+</CardGrid>
+
+## Быстрый старт
+
+```bash
+composer require hybridgram/tgbot-laravel
+php artisan vendor:publish --provider="HybridGram\Providers\TelegramServiceProvider"
+```
+
+```php
+use HybridGram\Facades\TelegramRouter;
+
+TelegramRouter::onCommand('/start', function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $telegram->sendMessage($data->chatId, 'Привет! 👋');
+});
+```
+
+## Документация
+
+Изучите документацию, чтобы узнать больше о возможностях пакета:
+
+- **[Начало работы](/ru/getting-started/introduction/)** — установка и базовая настройка
+- **[Роутинг](/ru/basics/routing/)** — создание обработчиков для различных типов обновлений
+- **[Отправка сообщений](/ru/sending/telegram-bot-api/)** — работа с TelegramBotApi и приоритетами
+- **[Режимы работы](/ru/modes/webhook/)** — настройка webhook и polling

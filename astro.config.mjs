@@ -12,44 +12,61 @@ export default defineConfig({
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/hybridgram/tgbot-laravel' },
 			],
+			locales: {
+				en: {
+					label: 'English',
+					lang: 'en',
+				},
+				ru: {
+					label: 'Русский',
+					lang: 'ru',
+				},
+			},
+			defaultLocale: 'en',
 			sidebar: [
 				{
-					label: 'Начало работы',
+					label: 'Getting Started',
+					translations: { ru: 'Начало работы' },
 					items: [
-						{ label: 'Введение', slug: 'getting-started/introduction' },
-						{ label: 'Установка', slug: 'getting-started/installation' },
-						{ label: 'Конфигурация', slug: 'getting-started/configuration' },
+						{ label: 'Introduction', slug: 'getting-started/introduction', translations: { ru: 'Введение' } },
+						{ label: 'Installation', slug: 'getting-started/installation', translations: { ru: 'Установка' } },
+						{ label: 'Configuration', slug: 'getting-started/configuration', translations: { ru: 'Конфигурация' } },
 					],
 				},
 				{
-					label: 'Основы',
+					label: 'Basics',
+					translations: { ru: 'Основы' },
 					items: [
-						{ label: 'Роутинг', slug: 'basics/routing' },
-						{ label: 'Обработка команд', slug: 'basics/commands' },
-						{ label: 'Обработка сообщений', slug: 'basics/messages' },
+						{ label: 'Routing', slug: 'basics/routing', translations: { ru: 'Роутинг' } },
+						{ label: 'Handling Commands', slug: 'basics/commands', translations: { ru: 'Обработка команд' } },
+						{ label: 'Handling Messages', slug: 'basics/messages', translations: { ru: 'Обработка сообщений' } },
 						{ label: 'Callback Query', slug: 'basics/callback-query' },
-						{ label: 'Справочник по роутингу', slug: 'routing/reference' },
+						{ label: 'Routing Reference', slug: 'routing/reference', translations: { ru: 'Справочник по роутингу' } },
 					],
 				},
 				{
-					label: 'Продвинутые возможности',
+					label: 'Advanced Features',
+					translations: { ru: 'Продвинутые возможности' },
 					items: [
 						{ label: 'Middleware', slug: 'advanced/middleware' },
-						{ label: 'Состояния (States)', slug: 'advanced/states' },
-						{ label: 'Настройки бота', slug: 'advanced/bot-settings' },
-						{ label: 'Работа с несколькими ботами', slug: 'advanced/multiple-bots' },
+						{ label: 'States', slug: 'advanced/states', translations: { ru: 'Состояния (States)' } },
+						{ label: 'Bot Settings', slug: 'advanced/bot-settings', translations: { ru: 'Настройки бота' } },
+						{ label: 'Multiple Bots', slug: 'advanced/multiple-bots', translations: { ru: 'Работа с несколькими ботами' } },
+						{ label: 'Go proxy tgook', slug: 'advanced/go-proxy-tgook' },
 					],
 				},
 				{
-					label: 'Отправка сообщений',
+					label: 'Sending Messages',
+					translations: { ru: 'Отправка сообщений' },
 					items: [
 						{ label: 'TelegramBotApi', slug: 'sending/telegram-bot-api' },
-						{ label: 'Приоритеты и очереди', slug: 'sending/priorities-queues' },
+						{ label: 'Priorities & Queues', slug: 'sending/priorities-queues', translations: { ru: 'Приоритеты и очереди' } },
 						{ label: 'Rate Limiting', slug: 'sending/rate-limiting' },
 					],
 				},
 				{
-					label: 'Режимы работы',
+					label: 'Operation Modes',
+					translations: { ru: 'Режимы работы' },
 					items: [
 						{ label: 'Webhook', slug: 'modes/webhook' },
 						{ label: 'Polling', slug: 'modes/polling' },
