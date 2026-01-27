@@ -3,7 +3,7 @@ title: Routing
 description: Basics of creating routes for handling Telegram updates
 ---
 
-Routing in Laravel Async Telegram allows you to define handlers for various types of Telegram updates. The API is very similar to standard Laravel routing, making it intuitive.
+Routing in TGbot Laravel allows you to define handlers for various types of Telegram updates. The API is very similar to standard Laravel routing, making it intuitive.
 
 ## Basic Concepts
 

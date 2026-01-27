@@ -1,6 +1,6 @@
 ---
 title: Установка
-description: Установка пакета Laravel Async Telegram
+description: Установка пакета TGbot Laravel
 ---
 
 ## Установка через Composer

@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Installing the Laravel Async Telegram package
+description: Installing the TGbot Laravel package
 ---
 
 ## Installation via Composer

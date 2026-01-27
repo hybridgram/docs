@@ -1,9 +1,9 @@
 ---
 title: Introduction
-description: Getting started with Laravel Async Telegram package
+description: Getting started with TGbot Laravel package
 ---
 
-Laravel Async Telegram is a high-performance package for building Telegram bots on Laravel. It uses Go to process webhooks and provides maximum performance when handling a large number of updates.
+TGbot Laravel is a high-performance package for building Telegram bots on Laravel. It uses Go to process webhooks and provides maximum performance when handling a large number of updates.
 
 ## Key Features
 

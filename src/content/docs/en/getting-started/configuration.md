@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: Configuring the Laravel Async Telegram package
+description: Configuring the TGbot Laravel package
 ---
 
 The package configuration is located in the `config/hybridgram.php` file, which is created after publishing the configuration.
