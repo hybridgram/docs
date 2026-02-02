@@ -14,7 +14,7 @@ In the `bots` array, you configure your Telegram bots. You can add multiple bots
     [
         'token' => env('BOT_TOKEN'),
         'bot_id' => env('BOT_ID', 'main'),
-        'update_mode' => UpdateModeEnum::POLLING, // or WEBHOOK
+        'update_mode' => UpdateModeEnum::POLLING, // or WEBHOOK or WEBHOOK_ASYNC
         'routes_file' => base_path(env('TELEGRAM_ROUTES_FILE', 'routes/telegram.php')),
         'polling_limit' => env('TELEGRAM_POLLING_LIMIT', 100),
         'polling_timeout' => env('TELEGRAM_POLLING_TIMEOUT', 0),
@@ -32,21 +32,21 @@ In the `bots` array, you configure your Telegram bots. You can add multiple bots
 
 ### Bot Configuration Parameters
 
-| Parameter | Description | Required |
-|-----------|-------------|----------|
-| `token` | Bot token from @BotFather | ✅ Yes |
-| `bot_id` | Unique bot identifier | No (defaults to 'main') |
-| `update_mode` | Operation mode: `POLLING` or `WEBHOOK` | Yes |
-| `routes_file` | Path to routes file | Yes |
-| `polling_limit` | Updates limit per request (for Polling) | No |
-| `polling_timeout` | Request timeout in seconds (for Polling) | No |
-| `allowed_updates` | Array of allowed update types | No |
-| `secret_token` | Secret token for webhook | No |
-| `webhook_url` | Webhook URL | For WEBHOOK mode |
-| `webhook_port` | Port for Go handler | No |
-| `certificate_path` | Path to SSL certificate | No |
-| `webhook_drop_pending_updates` | Drop pending updates | No |
-| `bot_name` | Bot name | No |
+| Parameter | Description                                                             | Required |
+|-----------|-------------------------------------------------------------------------|----------|
+| `token` | Bot token from @BotFather                                               | ✅ Yes |
+| `bot_id` | Unique bot identifier                                                   | No (defaults to 'main') |
+| `update_mode` | Operation mode: `POLLING` or `WEBHOOK` or `WEBHOOK_ASYNC` may be string | Yes |
+| `routes_file` | Path to routes file                                                     | Yes |
+| `polling_limit` | Updates limit per request (for Polling)                                 | No |
+| `polling_timeout` | Request timeout in seconds (for Polling)                                | No |
+| `allowed_updates` | Array of allowed update types                                           | No |
+| `secret_token` | Secret token for webhook                                                | No |
+| `webhook_url` | Webhook URL                                                             | For WEBHOOK mode |
+| `webhook_port` | Port for Go handler                                                     | No |
+| `certificate_path` | Path to SSL certificate                                                 | No |
+| `webhook_drop_pending_updates` | Drop pending updates                                                    | No |
+| `bot_name` | Bot name                                                                | No |
 
 ## Sending Configuration
 

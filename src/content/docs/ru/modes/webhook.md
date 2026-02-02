@@ -79,6 +79,20 @@ Route::post('/telegram/bot/webhook/{botId}',
 )->name('telegram.bot.webhook');
 ```
 
+Параметр `{botId}` из URL автоматически преобразуется в объект `BotConfig`. Метод `handle` получает уже готовую конфигурацию бота, а не строку:
+
+```php
+use HybridGram\Core\Config\BotConfig;
+use HybridGram\Http\Controllers\WebhookController;
+
+// Сигнатура метода handle — второй аргумент это BotConfig, не string
+public function handle(\Illuminate\Http\Request $request, BotConfig $botConfig): \Illuminate\Http\Response
+{
+    // $botConfig — объект с токеном, bot_id, routes_file и другими настройками бота
+    // ...
+}
+```
+
 ## Безопасность
 
 ### Secret Token

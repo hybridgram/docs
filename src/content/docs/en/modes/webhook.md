@@ -79,6 +79,20 @@ Route::post('/telegram/bot/webhook/{botId}',
 )->name('telegram.bot.webhook');
 ```
 
+The `{botId}` URL parameter is automatically resolved to a `BotConfig` object. The `handle` method receives the resolved bot configuration, not a string:
+
+```php
+use HybridGram\Core\Config\BotConfig;
+use HybridGram\Http\Controllers\WebhookController;
+
+// handle method signature — second argument is BotConfig, not string
+public function handle(\Illuminate\Http\Request $request, BotConfig $botConfig): \Illuminate\Http\Response
+{
+    // $botConfig — object with token, bot_id, routes_file and other bot settings
+    // ...
+}
+```
+
 ## Security
 
 ### Secret Token
