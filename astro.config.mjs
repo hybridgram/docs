@@ -50,6 +50,7 @@ export default defineConfig({
 						{ label: 'Middleware', slug: 'advanced/middleware', translations: { en: 'Middleware', ru: 'Middleware' } },
 						{ label: 'States', slug: 'advanced/states', translations: { en: 'States', ru: 'Состояния (States)' } },
 						{ label: 'Multiple Bots', slug: 'advanced/multiple-bots', translations: { en: 'Multiple Bots', ru: 'Работа с несколькими ботами' } },
+						{ label: 'Programmatic Bot Registration', slug: 'advanced/programmatic-bots', translations: { en: 'Programmatic Bot Registration', ru: 'Регистрация ботов в коде' } },
 					],
 				},
 				{

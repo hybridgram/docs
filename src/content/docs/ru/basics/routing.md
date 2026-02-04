@@ -47,7 +47,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 // Команда с параметрами
 TelegramRouter::onCommand('/help', function(CommandData $data) {
     // $data->commandParams содержит массив аргументов после команды
-    $params = $data->commandParams;
+    $params = $data->arguments;
     // ...
 });
 
