@@ -14,7 +14,7 @@ description: Настройка пакета TGbot Laravel
     [
         'token' => env('BOT_TOKEN'),
         'bot_id' => env('BOT_ID', 'main'),
-        'update_mode' => UpdateModeEnum::POLLING, // или WEBHOOK
+        'update_mode' => UpdateModeEnum::POLLING, // или WEBHOOK или WEBHOOK_ASYNC
         'routes_file' => base_path(env('TELEGRAM_ROUTES_FILE', 'routes/telegram.php')),
         'polling_limit' => env('TELEGRAM_POLLING_LIMIT', 100),
         'polling_timeout' => env('TELEGRAM_POLLING_TIMEOUT', 0),
@@ -36,7 +36,7 @@ description: Настройка пакета TGbot Laravel
 |----------|----------|--------------|
 | `token` | Токен бота от @BotFather | ✅ Да |
 | `bot_id` | Уникальный идентификатор бота | Нет (по умолчанию 'main') |
-| `update_mode` | Режим работы: `POLLING` или `WEBHOOK` | Да |
+| `update_mode` | Режим работы: `POLLING`, `WEBHOOK` или `WEBHOOK_ASYNC`; может быть строкой (`'polling'`, `'webhook'`, `'webhook_async'`) | Да |
 | `routes_file` | Путь к файлу с роутами | Да |
 | `polling_limit` | Лимит обновлений за запрос (для Polling) | Нет |
 | `polling_timeout` | Таймаут запроса в секундах (для Polling) | Нет |

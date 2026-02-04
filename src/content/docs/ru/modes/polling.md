@@ -88,6 +88,24 @@ php artisan hybridgram:polling main --allowed-updates=message,callback_query
 'allowed_updates' => ['message', 'callback_query'],
 ```
 
+#### Опции команды hybridgram:polling
+
+| Опция | Короткая | Описание |
+|-------|----------|----------|
+| `--log-updates` | `-L`     | Выводить краткую строку по каждому полученному апдейту |
+| `--full` | `-F`     | Выводить полный JSON апдейта (подразумевает `--log-updates`) |
+| `--hot-reload` | `-R`     | Автоперезапуск при изменении кода (для разработки) |
+| `--watch=` | `-W=`    | Пути для отслеживания через запятую (по умолчанию: app,routes,config,src) |
+| `--watch-interval=1` | `-I`     | Интервал проверки файлов в секундах (режим hot-reload) |
+
+Примеры с короткими алиасами:
+
+```bash
+php artisan hybridgram:polling main -L
+php artisan hybridgram:polling main -F
+php artisan hybridgram:polling main -R -W=app,routes -I 2
+```
+
 ## Параметры Polling
 
 ### polling_limit
@@ -168,7 +186,14 @@ stdout_logfile=/path/to/storage/logs/polling.log
 
 ### Логирование
 
-Команда выводит информацию о получаемых обновлениях:
+Чтобы видеть в консоли получаемые апдейты, используйте опции `-l` (краткая строка по каждому апдейту) или `-f` (полный JSON):
+
+```bash
+php artisan hybridgram:polling main -L
+php artisan hybridgram:polling main -F
+```
+
+Пример вывода с `-L`:
 
 ```
 Processing update 12345...

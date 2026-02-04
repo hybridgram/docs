@@ -88,6 +88,24 @@ Or in config:
 'allowed_updates' => ['message', 'callback_query'],
 ```
 
+#### hybridgram:polling command options
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--log-updates` | `-L`  | Print a one-line summary for every received update |
+| `--full` | `-F`  | Print full update payload as pretty JSON (implies `--log-updates`) |
+| `--hot-reload` | `-R`  | Auto-restart on code changes (for development) |
+| `--watch=` | `-W=` | Comma-separated paths to watch (default: app,routes,config,src) |
+| `--watch-interval=1` | `-I`  | Seconds between file scans in hot-reload mode |
+
+Examples with short aliases:
+
+```bash
+php artisan hybridgram:polling main -L
+php artisan hybridgram:polling main -F
+php artisan hybridgram:polling main -R -W=app,routes -I 2
+```
+
 ## Polling Parameters
 
 ### polling_limit
@@ -168,7 +186,14 @@ Don't run multiple polling processes for the same bot simultaneously — this ma
 
 ### Logging
 
-Command outputs information about received updates:
+To see received updates in the console, use `-L` (one-line summary per update) or `-F` (full JSON):
+
+```bash
+php artisan hybridgram:polling main -L
+php artisan hybridgram:polling main -F
+```
+
+Example output with `-L`:
 
 ```
 Processing update 12345...
