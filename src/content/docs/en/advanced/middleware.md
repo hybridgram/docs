@@ -72,7 +72,7 @@ Checks if chat/user is in a specific state:
 ```php
 use HybridGram\Http\Middlewares\CheckStateTelegramRouteMiddleware;
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // This route triggers only if chat is in 'awaiting_input' state
 })
 ->middleware(new CheckStateTelegramRouteMiddleware(
@@ -102,7 +102,7 @@ Limits request frequency from user:
 ```php
 use HybridGram\Http\Middlewares\RateLimitTelegramRouteMiddleware;
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 })
 ->middleware(new RateLimitTelegramRouteMiddleware(

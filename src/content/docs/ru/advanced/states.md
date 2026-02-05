@@ -95,9 +95,9 @@ if ($stateManager->isChatInAnyState($chat, ['awaiting_name', 'awaiting_email']))
 ### Фильтрация роутов по состоянию
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Этот роут сработает только если чат в состоянии 'awaiting_name'
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     
@@ -109,7 +109,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 
 ```php
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onMessage(function(TextMessageData $data) {
         // Обработка
     })
     ->fromChatState('awaiting_name'); // Роут сработает только из этого состояния
@@ -157,7 +157,7 @@ TelegramRouter::onCommand('/register', function(CommandData $data) {
 
 // Шаг 2: Получение имени
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onTextMessage(function(TextMessageData $data) {
         $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
         $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
         $chat = $data->getChat();
@@ -177,7 +177,7 @@ TelegramRouter::forBot('main')
 
 // Шаг 3: Получение email
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onTextMessage(function(TextMessageData $data) {
         $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
         $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
         $chat = $data->getChat();
@@ -221,7 +221,7 @@ TelegramRouter::onCommand('/cancel', function(CommandData $data) {
 ### Работа с данными состояния
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     

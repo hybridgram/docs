@@ -72,7 +72,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 ```php
 use HybridGram\Http\Middlewares\CheckStateTelegramRouteMiddleware;
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Этот роут сработает только если чат в состоянии 'awaiting_input'
 })
 ->middleware(new CheckStateTelegramRouteMiddleware(
@@ -102,7 +102,7 @@ TelegramRouter::onCommand('/cancel', function(CommandData $data) {
 ```php
 use HybridGram\Http\Middlewares\RateLimitTelegramRouteMiddleware;
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 })
 ->middleware(new RateLimitTelegramRouteMiddleware(

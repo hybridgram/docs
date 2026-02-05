@@ -21,11 +21,13 @@ description: Полный список всех методов роутинга 
   - Closure для кастомной проверки
   - `null` или `'*'` для обработки всех событий данного типа
 
-Все обработчики получают объект данных, который наследуется от `AbstractRouteData` и содержит:
+Все обработчики получают объект данных, который наследуется от `AbstractRouteData` (пространство имён `HybridGram\Core\Routing\RouteData`) и содержит:
 - `$data->update` — полный объект `Update` от Telegram
 - `$data->botId` — ID бота
 - `$data->getChat()` — метод для получения объекта `Chat`
 - `$data->getUser()` — метод для получения объекта `User`
+- `$data->getChatId()` — ID чата (или `null`)
+- `$data->getUserId()` — ID пользователя (или `null`)
 
 ## Команды и сообщения
 
@@ -71,8 +73,9 @@ TelegramRouter::onCommand('/user:*', function(CommandData $data) {
 
 **Событие:** `message.text` присутствует
 
-**Данные:** `MessageData`
-- `$data->message` — текст сообщения
+**Данные:** `TextMessageData` (`HybridGram\Core\Routing\RouteData\TextMessageData`)
+- `$data->text` — текст сообщения (string)
+- `$data->message` — полный объект `Message`
 - `$data->update`
 - `$data->botId`
 - `$data->getChat()`
@@ -80,11 +83,13 @@ TelegramRouter::onCommand('/user:*', function(CommandData $data) {
 
 **Пример:**
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    // Обработка всех сообщений
+use HybridGram\Core\Routing\RouteData\TextMessageData;
+
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    // Обработка всех сообщений; текст в $data->text
 });
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Обработка сообщений с паттерном
 }, '*', 'привет*');
 ```
@@ -991,7 +996,7 @@ TelegramRouter::group([
     'for_bot' => 'main',
     'chat_type' => [ChatType::PRIVATE, ChatType::GROUP],
 ], function($router) {
-    $router->onMessage(function(MessageData $data) {
+    $router->onMessage(function(TextMessageData $data) {
         // Роут работает в приватных чатах и группах
     });
 });
@@ -1120,7 +1125,7 @@ TelegramRouter::forBot('main')
 // Несколько типов
 TelegramRouter::forBot('main')
     ->chatTypes([ChatType::PRIVATE, ChatType::GROUP])
-    ->onMessage(function(MessageData $data) {
+    ->onMessage(function(TextMessageData $data) {
         // ...
     });
 

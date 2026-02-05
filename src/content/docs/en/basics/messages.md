@@ -11,14 +11,14 @@ Handling text messages is one of the core functions of a Telegram bot. The packa
 
 ```php
 use HybridGram\Facades\TelegramRouter;
-use HybridGram\Core\Routing\RouteData\TextMessageData;
+use HybridGram\Core\Routing\RouteData\TextTextMessageData;
 
-TelegramRouter::onMessage(function(TextMessageData $data) {
-    $message = $data->message; // Message text
+TelegramRouter::onTextMessage(function(TextTextMessageData $data) {
+    $text = $data->text; // Message text (string)
     $chatId = $data->getChat()->id;
     
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
-    $telegram->sendMessage($chatId, "You wrote: {$message}");
+    $telegram->sendMessage($chatId, "You wrote: {$text}");
 });
 ```
 
@@ -28,12 +28,12 @@ Check message text by string pattern:
 
 ```php
 // Exact match
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', 'hello');
 
 // With wildcard (Laravel Str::is)
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Triggers for: "hello", "hello everyone", "say hello"
 }, '*', 'hello*');
 ```
@@ -43,11 +43,11 @@ TelegramRouter::onMessage(function(MessageData $data) {
 For complex logic, use closures:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Processing
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Return true if route should trigger
-    $text = $data->message;
+    $text = $data->text;
     
     // Check length
     if (strlen($text) < 10) {
@@ -62,18 +62,18 @@ TelegramRouter::onMessage(function(MessageData $data) {
 
 ## Accessing Message Data
 
-The `MessageData` object contains:
+The `TextMessageData` object contains:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    // Message text
-    $message = $data->message;
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    // Message text (string)
+    $text = $data->text;
+    
+    // Full Message object from Telegram API
+    $messageObject = $data->message;
     
     // Full Update object
     $update = $data->update;
-    
-    // Message object from Telegram API
-    $messageObject = $update->message;
     
     // Chat and User
     $chat = $data->getChat();
@@ -91,8 +91,8 @@ TelegramRouter::onMessage(function(MessageData $data) {
 Telegram supports various formatting types in messages:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    $message = $data->update->message;
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    $message = $data->message;
     
     // Check for formatting
     if ($message->entities !== null) {
@@ -113,7 +113,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 Messages are often processed depending on current state:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     
@@ -124,7 +124,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
         $name = $data->message;
         // Save name and proceed to next step
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Check if in "awaiting name" state
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
@@ -140,7 +140,7 @@ You can filter messages by chat type:
 
 ```php
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onTextMessage(function(TextMessageData $data) {
         // Private chats only
     })
     ->whereChatType('private');
@@ -151,7 +151,7 @@ TelegramRouter::forBot('main')
 ### Echo Bot
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     $telegram->sendMessage(
         $data->getChat()->id,
@@ -163,7 +163,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 ### Keyword Search
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $text = strtolower($data->message);
     $chatId = $data->getChat()->id;
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
@@ -175,7 +175,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
         $telegram->sendMessage($chatId, 'Fetching exchange rates...');
         // ...
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     $keywords = ['weather', 'rate', 'news'];
     $text = strtolower($data->message);
     return str_contains($text, $keywords);
@@ -185,7 +185,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 ### Handling Long Messages
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $text = $data->message;
     
     // Split long message into parts
@@ -197,7 +197,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
             $telegram->sendMessage($data->getChat()->id, $chunk);
         }
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     return strlen($data->message) > 4096;
 });
 ```

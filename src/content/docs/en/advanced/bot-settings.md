@@ -139,7 +139,7 @@ $settings
 
 ### BotSettingsRegistry
 
-Register settings for each bot through `BotSettingsRegistry`:
+Register settings for each bot through `BotSettingsRegistry::forBot()`:
 
 ```php
 use HybridGram\Core\Config\BotSettings\BotSettings;
@@ -147,7 +147,7 @@ use HybridGram\Core\Config\BotSettings\BotSettingsRegistry;
 use Phptg\BotApi\Type\BotCommand;
 
 // In your ServiceProvider or bootstrap file
-BotSettingsRegistry::register('main', function(): BotSettings {
+BotSettingsRegistry::forBot('main', function(): BotSettings {
     return BotSettings::create()
         ->description('Main production bot')
         ->description('Основной продакшн бот', 'ru')

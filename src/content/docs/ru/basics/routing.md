@@ -21,7 +21,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 
 ### Структура обработчика
 
-Обработчик роута получает объект данных (например, `CommandData`, `MessageData`), который содержит:
+Обработчик роута получает объект данных (например, `CommandData`, `TextMessageData`), который содержит:
 - `$data->update` — полный объект Update от Telegram
 - `$data->botId` — ID бота, для которого сработал роут
 - `$data->getChat()` — объект Chat
@@ -66,18 +66,18 @@ use HybridGram\Facades\TelegramRouter;
 use HybridGram\Core\Routing\RouteData\TextMessageData;
 
 // Все сообщения
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $message = $data->message;
     // ...
 });
 
 // Сообщения по паттерну
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', 'привет'); // Паттерн для проверки текста
 
 // Кастомная проверка через closure
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', function(TextMessageData $data) {
     return str_contains($data->message, 'hello');
@@ -254,7 +254,7 @@ TelegramRouter::group([
     'for_bot' => 'main',
     'chat_type' => [ChatType::PRIVATE, ChatType::GROUP], // Массив типов
 ], function($router) {
-    $router->onMessage(function(MessageData $data) {
+    $router->onTextMessage(function(TextMessageData $data) {
         // ...
     });
 });
@@ -285,9 +285,9 @@ TelegramRouter::onCallbackQuery(function(CallbackQueryData $data) {
 Для более сложной логики используйте closures:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Возвращайте true, если роут должен сработать
     return $data->message->text !== null 
         && strlen($data->message->text) > 100;

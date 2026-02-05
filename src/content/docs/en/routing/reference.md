@@ -21,11 +21,13 @@ Most routing methods accept the following common parameters:
   - Closure for custom validation
   - `null` or `'*'` to handle all events of this type
 
-All handlers receive a data object that inherits from `AbstractRouteData` and contains:
+All handlers receive a data object that inherits from `AbstractRouteData` (namespace `HybridGram\Core\Routing\RouteData`) and contains:
 - `$data->update` — full `Update` object from Telegram
 - `$data->botId` — bot ID
 - `$data->getChat()` — method to get `Chat` object
 - `$data->getUser()` — method to get `User` object
+- `$data->getChatId()` — chat ID (or `null`)
+- `$data->getUserId()` — user ID (or `null`)
 
 ## Commands and Messages
 
@@ -71,8 +73,9 @@ Handles text messages.
 
 **Event:** `message.text` present
 
-**Data:** `MessageData`
-- `$data->message` — message text
+**Data:** `TextMessageData` (`HybridGram\Core\Routing\RouteData\TextMessageData`)
+- `$data->text` — message text (string)
+- `$data->message` — full `Message` object
 - `$data->update`
 - `$data->botId`
 - `$data->getChat()`
@@ -80,11 +83,13 @@ Handles text messages.
 
 **Example:**
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    // Handle all messages
+use HybridGram\Core\Routing\RouteData\TextMessageData;
+
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    // Handle all messages; text is in $data->text
 });
 
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Handle messages with pattern
 }, '*', 'hello*');
 ```

@@ -139,7 +139,7 @@ $settings
 
 ### BotSettingsRegistry
 
-Зарегистрируйте настройки для каждого бота через `BotSettingsRegistry`:
+Зарегистрируйте настройки для каждого бота через `BotSettingsRegistry::forBot()`:
 
 ```php
 use HybridGram\Core\Config\BotSettings\BotSettings;
@@ -147,7 +147,7 @@ use HybridGram\Core\Config\BotSettings\BotSettingsRegistry;
 use Phptg\BotApi\Type\BotCommand;
 
 // В вашем ServiceProvider или bootstrap файле
-BotSettingsRegistry::register('main', function(): BotSettings {
+BotSettingsRegistry::forBot('main', function(): BotSettings {
     return BotSettings::create()
         ->description('Main production bot')
         ->description('Основной продакшн бот', 'ru')
@@ -227,7 +227,7 @@ class TelegramBotServiceProvider extends ServiceProvider
     
     private function registerBotSettings(): void
     {
-        BotSettingsRegistry::register('main', function(): BotSettings {
+        BotSettingsRegistry::forBot('main', function(): BotSettings {
             return BotSettings::create()
                 // Описания
                 ->description('Your smart assistant for daily tasks')

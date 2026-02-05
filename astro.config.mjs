@@ -70,6 +70,13 @@ export default defineConfig({
 						{ label: 'Polling', slug: 'modes/polling', translations: { en: 'Polling', ru: 'Polling' } },
 					],
 				},
+				{
+					label: 'Changelog',
+					translations: { en: 'Changelog', ru: 'Changelog' },
+					items: [
+						{ label: 'Changelog', slug: 'changelog', translations: { en: 'Changelog', ru: 'Changelog' } },
+					],
+				},
 			],
 		}),
 	],

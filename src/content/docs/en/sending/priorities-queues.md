@@ -132,7 +132,9 @@ foreach ($users as $user) {
 ### Mixed Usage
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+use HybridGram\Core\Routing\RouteData\TextMessageData;
+
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $telegram = app(TelegramBotApi::class);
     
     // High-priority response

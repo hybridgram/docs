@@ -95,9 +95,9 @@ if ($stateManager->isChatInAnyState($chat, ['awaiting_name', 'awaiting_email']))
 ### Filtering Routes by State
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // This route triggers only if chat is in 'awaiting_name' state
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     
@@ -109,7 +109,7 @@ Or using route method:
 
 ```php
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onMessage(function(TextMessageData $data) {
         // Processing
     })
     ->fromChatState('awaiting_name'); // Route triggers only from this state
@@ -157,7 +157,7 @@ TelegramRouter::onCommand('/register', function(CommandData $data) {
 
 // Step 2: Getting name
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onTextMessage(function(TextMessageData $data) {
         $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
         $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
         $chat = $data->getChat();
@@ -177,7 +177,7 @@ TelegramRouter::forBot('main')
 
 // Step 3: Getting email
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onTextMessage(function(TextMessageData $data) {
         $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
         $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
         $chat = $data->getChat();
@@ -221,7 +221,7 @@ TelegramRouter::onCommand('/cancel', function(CommandData $data) {
 ### Working with State Data
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     

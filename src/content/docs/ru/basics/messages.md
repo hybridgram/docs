@@ -11,14 +11,14 @@ description: Работа с текстовыми сообщениями от п
 
 ```php
 use HybridGram\Facades\TelegramRouter;
-use HybridGram\Core\Routing\RouteData\TextMessageData;
+use HybridGram\Core\Routing\RouteData\TextTextMessageData;
 
-TelegramRouter::onMessage(function(TextMessageData $data) {
-    $message = $data->message; // Текст сообщения
+TelegramRouter::onTextMessage(function(TextTextMessageData $data) {
+    $text = $data->text; // Текст сообщения (string)
     $chatId = $data->getChat()->id;
     
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
-    $telegram->sendMessage($chatId, "Вы написали: {$message}");
+    $telegram->sendMessage($chatId, "Вы написали: {$text}");
 });
 ```
 
@@ -28,12 +28,12 @@ TelegramRouter::onMessage(function(TextMessageData $data) {
 
 ```php
 // Точное совпадение
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', 'привет');
 
 // С использованием wildcard (Laravel Str::is)
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // Сработает для: "привет", "привет всем", "скажи привет"
 }, '*', 'привет*');
 ```
@@ -43,11 +43,11 @@ TelegramRouter::onMessage(function(MessageData $data) {
 Для сложной логики используйте closure:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onMessage(function(TextMessageData $data) {
     // Обработка
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Возвращайте true, если роут должен сработать
-    $text = $data->message;
+    $text = $data->text;
     
     // Проверка длины
     if (strlen($text) < 10) {
@@ -62,18 +62,18 @@ TelegramRouter::onMessage(function(MessageData $data) {
 
 ## Доступ к данным сообщения
 
-Объект `MessageData` содержит:
+Объект `TextMessageData` содержит:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    // Текст сообщения
-    $message = $data->message;
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    // Текст сообщения (string)
+    $text = $data->text;
+    
+    // Полный объект Message из Telegram API
+    $messageObject = $data->message;
     
     // Полный объект Update
     $update = $data->update;
-    
-    // Объект Message из Telegram API
-    $messageObject = $update->message;
     
     // Chat и User
     $chat = $data->getChat();
@@ -91,8 +91,8 @@ TelegramRouter::onMessage(function(MessageData $data) {
 Telegram поддерживает различные типы форматирования в сообщениях:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
-    $message = $data->update->message;
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
+    $message = $data->message;
     
     // Проверка наличия форматирования
     if ($message->entities !== null) {
@@ -113,7 +113,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 Сообщения часто обрабатываются в зависимости от текущего состояния:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
     
@@ -124,7 +124,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
         $name = $data->message;
         // Сохранить имя и перейти к следующему шагу
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Проверяем, что это состояние "ожидание имени"
     $stateManager = app(\HybridGram\Core\State\StateManagerInterface::class);
     $chat = $data->getChat();
@@ -140,7 +140,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 
 ```php
 TelegramRouter::forBot('main')
-    ->onMessage(function(MessageData $data) {
+    ->onMessage(function(TextMessageData $data) {
         // Только приватные чаты
     })
     ->whereChatType('private');
@@ -151,7 +151,7 @@ TelegramRouter::forBot('main')
 ### Эхо-бот
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     $telegram->sendMessage(
         $data->getChat()->id,
@@ -163,7 +163,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 ### Поиск по ключевым словам
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $text = strtolower($data->message);
     $chatId = $data->getChat()->id;
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
@@ -175,7 +175,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
         $telegram->sendMessage($chatId, 'Запрашиваю курс валют...');
         // ...
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     $keywords = ['погода', 'курс', 'новости'];
     $text = strtolower($data->message);
     return str_contains($text, $keywords);
@@ -185,7 +185,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
 ### Обработка длинных сообщений
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $text = $data->message;
     
     // Разбить длинное сообщение на части
@@ -197,7 +197,7 @@ TelegramRouter::onMessage(function(MessageData $data) {
             $telegram->sendMessage($data->getChat()->id, $chunk);
         }
     }
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     return strlen($data->message) > 4096;
 });
 ```

@@ -21,7 +21,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 
 ### Handler Structure
 
-Route handlers receive a data object (e.g., `CommandData`, `MessageData`) that contains:
+Route handlers receive a data object (e.g., `CommandData`, `TextMessageData`) that contains:
 - `$data->update` — full Update object from Telegram
 - `$data->botId` — ID of the bot for which the route was triggered
 - `$data->getChat()` — Chat object
@@ -66,18 +66,18 @@ use HybridGram\Facades\TelegramRouter;
 use HybridGram\Core\Routing\RouteData\TextMessageData;
 
 // All messages
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     $message = $data->message;
     // ...
 });
 
 // Messages by pattern
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', 'hello'); // Pattern to check text
 
 // Custom check via closure
-TelegramRouter::onMessage(function(TextMessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
 }, '*', function(TextMessageData $data) {
     return str_contains($data->message, 'hello');
@@ -254,7 +254,7 @@ TelegramRouter::group([
     'for_bot' => 'main',
     'chat_type' => [ChatType::PRIVATE, ChatType::GROUP], // Array of types
 ], function($router) {
-    $router->onMessage(function(MessageData $data) {
+    $router->onTextMessage(function(TextMessageData $data) {
         // ...
     });
 });
@@ -285,9 +285,9 @@ TelegramRouter::onCallbackQuery(function(CallbackQueryData $data) {
 For more complex logic, use closures:
 
 ```php
-TelegramRouter::onMessage(function(MessageData $data) {
+TelegramRouter::onTextMessage(function(TextMessageData $data) {
     // ...
-}, '*', function(MessageData $data) {
+}, '*', function(TextMessageData $data) {
     // Return true if route should trigger
     return $data->message->text !== null 
         && strlen($data->message->text) > 100;
