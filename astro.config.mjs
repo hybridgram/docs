@@ -8,6 +8,23 @@ export default defineConfig({
 		starlight({
 			title: 'Telegram bot api Laravel package',
 			description: 'Super fast package for Laravel to build Telegram bots powered by Go',
+			head: [
+				{
+					tag: 'script',
+					attrs: { type: 'text/javascript' },
+					content: `(function(m,e,t,r,i,k,a){
+	m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+	m[i].l=1*new Date();
+	for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+	k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106683062', 'ym');
+ym(106683062, 'init', {ssr:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});`,
+				},
+				{
+					tag: 'noscript',
+					content: '<div><img src="https://mc.yandex.ru/watch/106683062" style="position:absolute; left:-9999px;" alt="" /></div>',
+				},
+			],
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/hybridgram/tgbot-laravel' },
 			],
