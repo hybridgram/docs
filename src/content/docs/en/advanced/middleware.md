@@ -129,6 +129,49 @@ TelegramRouter::forBot('main')
     ));
 ```
 
+#### Custom Locale Resolution
+
+You can provide custom logic for determining the locale using the `userLocale` parameter:
+
+**Using a Closure:**
+
+```php
+use HybridGram\Http\Middlewares\SetLocaleTelegramRouteMiddleware;
+use Phptg\BotApi\Type\Update\Update;
+
+// Determine locale from user database settings
+TelegramRouter::forBot('main')
+    ->onCommand('/start', function(CommandData $data) {
+        return __('welcome_message');
+    })
+    ->middleware(new SetLocaleTelegramRouteMiddleware(
+        supportedLocales: ['en', 'ru', 'uk', 'pt'],
+        fallbackLocale: 'en',
+        userLocale: function(Update $update): ?string {
+            $user = UpdateHelper::getUserFromUpdate($update);
+            if (!$user) {
+                return null;
+            }
+
+            // Fetch locale from your database
+            $userModel = User::where('telegram_id', $user->id)->first();
+            return $userModel?->preferred_locale;
+        }
+    ));
+```
+
+**Using a static string:**
+
+```php
+// Force a specific locale for all users in this route
+TelegramRouter::onCommand('/en_only', function(CommandData $data) {
+    // Always in English
+})
+->middleware(new SetLocaleTelegramRouteMiddleware(
+    userLocale: 'en'
+));
+```
+
 ## Using Middleware
 
 ### For Single Route
