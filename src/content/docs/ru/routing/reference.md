@@ -103,7 +103,7 @@ TelegramRouter::onTextMessage(function(TextMessageData $data) {
 **Параметры:**
 - `$action` — обработчик
 - `$botId` (по умолчанию `'*'`) — ID бота
-- `$pattern` (`callable|null`, по умолчанию `null`) — паттерн для подписи (caption)
+- `$pattern` (`\Closure|null`, по умолчанию `null`) — паттерн для подписи (caption)
 
 **Событие:** `message.photo` присутствует
 
@@ -349,7 +349,7 @@ TelegramRouter::onDocument(function(DocumentData $data) {
 **Параметры:**
 - `$action` — обработчик
 - `$botId` (по умолчанию `'*'`) — ID бота
-- `$pattern` (`callable|null`, по умолчанию `null`) — опциональный паттерн
+- `$pattern` (`\Closure|null`, по умолчанию `null`) — опциональный паттерн
 - `$isAnonymous` (`?bool`) — фильтр по анонимности опроса
 - `$pollType` (`?PollType`) — фильтр по типу опроса (`PollType::REGULAR` или `PollType::QUIZ`)
 
@@ -378,7 +378,7 @@ TelegramRouter::onPoll(function(PollData $data) {
 **Параметры:**
 - `$action` — обработчик
 - `$botId` (по умолчанию `'*'`) — ID бота
-- `$pattern` (`callable|null`, по умолчанию `null`) — опциональный паттерн
+- `$pattern` (`\Closure|null`, по умолчанию `null`) — опциональный паттерн
 - `$isAnonymous` (`?bool`) — фильтр по анонимности опроса
 - `$pollType` (`?PollType`) — фильтр по типу опроса
 
@@ -398,7 +398,7 @@ TelegramRouter::onPoll(function(PollData $data) {
 **Параметры:**
 - `$action` — обработчик
 - `$botId` (по умолчанию `'*'`) — ID бота
-- `$pattern` (`callable|null`, по умолчанию `null`) — опциональный паттерн
+- `$pattern` (`\Closure|null`, по умолчанию `null`) — опциональный паттерн
 - `$isAnonymous` (`?bool`) — фильтр по анонимности опроса
 - `$pollType` (`?PollType`) — фильтр по типу опроса
 
@@ -968,7 +968,7 @@ TelegramRouter::forBot('main')
 
 **Параметры:**
 - `$attributes` (`array`) — массив атрибутов (например, `['for_bot' => 'main', 'chat_type' => ChatType::GROUP, 'middlewares' => [...]`)
-- `$callback` (`callable`) — функция, которая получает `TelegramRouteBuilder` в качестве параметра
+- `$callback` (`\Closure`) — функция, которая получает `TelegramRouteBuilder` в качестве параметра
 
 **Атрибуты группы:**
 - `for_bot` (`string`) — ID бота

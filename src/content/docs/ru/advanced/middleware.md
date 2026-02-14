@@ -17,7 +17,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class MyMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         // Код до обработки
         
@@ -302,7 +302,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class AdminMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         $user = UpdateHelper::getUserFromUpdate($update);
         
@@ -355,7 +355,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class RequestLoggingMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         $startTime = microtime(true);
         $user = UpdateHelper::getUserFromUpdate($update);
