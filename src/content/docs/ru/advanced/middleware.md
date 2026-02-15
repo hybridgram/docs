@@ -17,7 +17,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class MyMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         // Код до обработки
         
@@ -142,6 +142,49 @@ TelegramRouter::forBot('main')
     ));
 ```
 
+#### Пользовательская логика определения локали
+
+Вы можете задать собственную логику определения локали с помощью параметра `userLocale`:
+
+**Использование Closure:**
+
+```php
+use HybridGram\Http\Middlewares\SetLocaleTelegramRouteMiddleware;
+use Phptg\BotApi\Type\Update\Update;
+
+// Определяем локаль из настроек пользователя в базе данных
+TelegramRouter::forBot('main')
+    ->onCommand('/start', function(CommandData $data) {
+        return __('welcome_message');
+    })
+    ->middleware(new SetLocaleTelegramRouteMiddleware(
+        supportedLocales: ['en', 'ru', 'uk', 'pt'],
+        fallbackLocale: 'en',
+        userLocale: function(Update $update): ?string {
+            $user = UpdateHelper::getUserFromUpdate($update);
+            if (!$user) {
+                return null;
+            }
+
+            // Получаем локаль из базы данных
+            $userModel = User::where('telegram_id', $user->id)->first();
+            return $userModel?->preferred_locale;
+        }
+    ));
+```
+
+**Использование статической строки:**
+
+```php
+// Принудительно устанавливаем определённую локаль для всех пользователей в этом маршруте
+TelegramRouter::onCommand('/ru_only', function(CommandData $data) {
+    // Всегда на русском языке
+})
+->middleware(new SetLocaleTelegramRouteMiddleware(
+    userLocale: 'ru'
+));
+```
+
 #### Особенности работы
 
 **Нормализация языковых кодов:**
@@ -259,7 +302,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class AdminMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         $user = UpdateHelper::getUserFromUpdate($update);
         
@@ -312,7 +355,7 @@ use Phptg\BotApi\Type\Update\Update;
 
 class RequestLoggingMiddleware implements TelegramRouteMiddlewareInterface
 {
-    public function handle(Update $update, callable $next): mixed
+    public function handle(Update $update, \Closure $next): mixed
     {
         $startTime = microtime(true);
         $user = UpdateHelper::getUserFromUpdate($update);

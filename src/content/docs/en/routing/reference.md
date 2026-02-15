@@ -103,7 +103,7 @@ Handles sent photos.
 **Parameters:**
 - `$action` — handler
 - `$botId` (default `'*'`) — bot ID
-- `$pattern` (`callable|null`, default `null`) — pattern for caption
+- `$pattern` (`\Closure|null`, default `null`) — pattern for caption
 
 **Event:** `message.photo` present
 
@@ -207,7 +207,7 @@ Handles poll creation.
 **Parameters:**
 - `$action` — handler
 - `$botId` (default `'*'`) — bot ID
-- `$pattern` (`callable|null`, default `null`) — optional pattern
+- `$pattern` (`\Closure|null`, default `null`) — optional pattern
 - `$isAnonymous` (`?bool`) — filter by poll anonymity
 - `$pollType` (`?PollType`) — filter by poll type (`PollType::REGULAR` or `PollType::QUIZ`)
 
