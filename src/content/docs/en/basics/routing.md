@@ -322,8 +322,22 @@ TelegramRouter::onFallback(function(FallbackData $data) {
 
 In development mode (`app()->isLocal()`) fallback automatically sends state information for debugging.
 
+## Alternative: PHP Attributes
+
+If you prefer a more modern, attribute-based approach to routing, you can use PHP 8 attributes instead of the facade. This keeps route definitions close to your handler methods:
+
+```php
+#[OnCommand('/start')]
+public function handleStart(CommandData $data): void {
+    // Handle /start command
+}
+```
+
+**[→ Learn about PHP Attributes Routing](/en/routing/attributes/)**
+
 ## What's Next?
 
 - **[Handling Commands](/en/basics/commands/)** — detailed work with commands
 - **[Handling Messages](/en/basics/messages/)** — working with text messages
 - **[Callback Query](/en/basics/callback-query/)** — handling button presses
+- **[PHP Attributes Routing](/en/routing/attributes/)** — modern attribute-based routing
