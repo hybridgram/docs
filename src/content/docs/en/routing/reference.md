@@ -7,6 +7,8 @@ description: Complete list of all routing methods from the TelegramRouter facade
 
 This section contains a complete list of all available routing methods from the `TelegramRouter` facade. Each method describes what parameters it accepts, which Telegram events it responds to, and what data is passed to the handler.
 
+> **Note:** If you prefer a more modern approach, you can also define routes using PHP 8 attributes. See **[PHP Attributes Routing](/en/routing/attributes/)** for an alternative approach to route registration.
+
 ## Common Parameters
 
 Most routing methods accept the following common parameters:
