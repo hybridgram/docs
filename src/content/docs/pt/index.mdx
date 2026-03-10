@@ -1,0 +1,67 @@
+---
+title: Telegram bot api Laravel package
+description: Pacote super rápido para Laravel para criar bots do Telegram com Go
+template: splash
+hero:
+  tagline: Pacote de alto desempenho para criar bots do Telegram no Laravel
+  image:
+    file: ../../../assets/houston.webp
+  actions:
+    - text: Começar
+      link: /pt/getting-started/introduction/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/hybridgram/tgbot-laravel
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Características
+
+<CardGrid stagger>
+	<Card title="⚡ Alto Desempenho" icon="rocket">
+		Usa Go para processar webhooks e oferece desempenho máximo
+	</Card>
+	<Card title="🎯 Roteamento Conveniente" icon="document">
+		API simples e intuitiva para criar rotas, semelhante ao Laravel
+	</Card>
+	<Card title="📦 Configuração Flexível" icon="setting">
+		Suporte para múltiplos bots, webhook e modos de operação polling
+	</Card>
+	<Card title="🚀 Envio Assíncrono" icon="zap">
+		Suporte a filas com prioridades e rate limiting automático
+	</Card>
+	<Card title="🔄 Estados" icon="sync">
+		Gerenciamento de estado de chat e usuário para criar conversas
+	</Card>
+	<Card title="🛡️ Middleware" icon="lock">
+		Sistema flexível de middleware para autorização, logging e controle de acesso
+	</Card>
+</CardGrid>
+
+## Início Rápido
+
+```bash
+composer require hybridgram/tgbot-laravel
+php artisan vendor:publish --provider="HybridGram\Providers\TelegramServiceProvider"
+```
+
+```php
+use HybridGram\Facades\TelegramRouter;
+
+TelegramRouter::onCommand('/start', function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $telegram->sendMessage($data->chatId, 'Olá! 👋');
+});
+```
+
+## Documentação
+
+Explore a documentação para saber mais sobre os recursos do pacote:
+
+- **[Começando](/pt/getting-started/introduction/)** — instalação e configuração básica
+- **[Roteamento](/pt/basics/routing/)** — criando manipuladores para vários tipos de atualização
+- **[Enviando Mensagens](/pt/sending/telegram-bot-api/)** — trabalhando com TelegramBotApi e prioridades
+- **[Modos de Operação](/pt/modes/webhook/)** — configurando webhook e polling
