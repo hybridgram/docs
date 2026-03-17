@@ -9,16 +9,29 @@ Commands are the primary way users interact with a bot. Commands start with `/` 
 
 ### Simple Command
 
+The first argument is the handler (closure), the third is the command pattern to match:
+
 ```php
 use HybridGram\Facades\TelegramRouter;
 use HybridGram\Core\Routing\RouteData\CommandData;
 
-TelegramRouter::onCommand('/start', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     $chatId = $data->getChat()->id;
     
     $telegram->sendMessage($chatId, 'Welcome! 👋');
-});
+}, '*', '/start');
+```
+
+Or via builder with bot specified:
+
+```php
+TelegramRouter::forBot('main')->onCommand(function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $chatId = $data->getChat()->id;
+    
+    $telegram->sendMessage($chatId, 'Welcome! 👋');
+}, '/start');
 ```
 
 ### Commands with Parameters
@@ -26,7 +39,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 Commands can contain parameters that are passed in the `$data->commandParams` array:
 
 ```php
-TelegramRouter::onCommand('/user', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $chatId = $data->getChat()->id;
     $params = $data->commandParams; // ['123'] if user typed /user 123
     
@@ -38,7 +51,7 @@ TelegramRouter::onCommand('/user', function(CommandData $data) {
     
     $userId = $params[0];
     // Processing...
-});
+}, '*', '/user');
 ```
 
 If the user enters `/user 123`, then `$data->commandParams` will contain `['123']`.
@@ -49,10 +62,10 @@ You can use patterns with `*` for more flexible handling:
 
 ```php
 // Command /user:* will handle /user with any parameters
-TelegramRouter::onCommand('/user:*', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $userId = $data->commandParams[0] ?? null;
     // ...
-});
+}, '*', '/user:*');
 ```
 
 ### Accessing Command Data
@@ -60,7 +73,7 @@ TelegramRouter::onCommand('/user:*', function(CommandData $data) {
 The `CommandData` object provides:
 
 ```php
-TelegramRouter::onCommand('/info', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     // Command
     $command = $data->command; // '/info'
     
@@ -76,7 +89,7 @@ TelegramRouter::onCommand('/info', function(CommandData $data) {
     
     // Bot ID
     $botId = $data->botId;
-});
+}, '*', '/info');
 ```
 
 ## Using Controllers
@@ -85,7 +98,7 @@ Instead of closures, you can use controllers:
 
 ```php
 // routes/telegram.php
-TelegramRouter::onCommand('/start', [StartController::class, 'handle']);
+TelegramRouter::onCommand([StartController::class, 'handle'], '*', '/start');
 
 // app/Telegram/Controllers/StartController.php
 namespace App\Telegram\Controllers;
@@ -107,16 +120,20 @@ class StartController
 You can handle multiple commands with a single handler:
 
 ```php
-TelegramRouter::onCommand(['/start', '/help', '/info'], function(CommandData $data) {
-    $command = $data->command;
-    
-    match($command) {
-        '/start' => $this->handleStart($data),
-        '/help' => $this->handleHelp($data),
-        '/info' => $this->handleInfo($data),
-        default => null,
+$handler = function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $chatId = $data->getChat()->id;
+    $message = match($data->command) {
+        'start' => 'Welcome!',
+        'help' => 'Command help...',
+        'info' => 'Bot info...',
+        default => 'Unknown command',
     };
-});
+    $telegram->sendMessage($chatId, $message);
+};
+TelegramRouter::onCommand($handler, '*', 'start');
+TelegramRouter::onCommand($handler, '*', 'help');
+TelegramRouter::onCommand($handler, '*', 'info');
 ```
 
 ## Commands with Parameter Options
@@ -124,14 +141,11 @@ TelegramRouter::onCommand(['/start', '/help', '/info'], function(CommandData $da
 You can customize parameter handling:
 
 ```php
-TelegramRouter::onCommand('/search', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     // ...
-}, '*', function($command, $params) {
-    // Custom parameter processing
-    return [
-        'query' => implode(' ', $params),
-        'filters' => $this->parseFilters($params),
-    ];
+}, '*', '/search', function($update, $params) {
+    // Custom filter: route matches only if returns true or CommandData
+    return count($params) > 0;
 });
 ```
 
@@ -158,7 +172,7 @@ This will make commands available in Telegram's menu.
 ### Command with Parameter Validation
 
 ```php
-TelegramRouter::onCommand('/transfer', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $params = $data->commandParams;
     $chatId = $data->getChat()->id;
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
@@ -176,13 +190,13 @@ TelegramRouter::onCommand('/transfer', function(CommandData $data) {
     }
     
     // Transfer processing...
-});
+}, '*', '/transfer');
 ```
 
 ### Command with States
 
 ```php
-TelegramRouter::onCommand('/settings', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     
     // Set state for the next step
@@ -199,7 +213,7 @@ TelegramRouter::onCommand('/settings', function(CommandData $data) {
         'Choose a setting:',
         replyMarkup: $keyboard
     );
-});
+}, '*', '/settings');
 ```
 
 ## What's Next?

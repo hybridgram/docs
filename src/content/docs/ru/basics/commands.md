@@ -9,16 +9,29 @@ description: Работа с командами Telegram бота
 
 ### Простая команда
 
+Первый аргумент — обработчик (closure), третий — паттерн команды для сопоставления:
+
 ```php
 use HybridGram\Facades\TelegramRouter;
 use HybridGram\Core\Routing\RouteData\CommandData;
 
-TelegramRouter::onCommand('/start', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     $chatId = $data->getChat()->id;
     
     $telegram->sendMessage($chatId, 'Добро пожаловать! 👋');
-});
+}, '*', '/start');
+```
+
+Или через builder с указанием бота:
+
+```php
+TelegramRouter::forBot('main')->onCommand(function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $chatId = $data->getChat()->id;
+    
+    $telegram->sendMessage($chatId, 'Добро пожаловать! 👋');
+}, '/start');
 ```
 
 ### Команды с параметрами
@@ -26,7 +39,7 @@ TelegramRouter::onCommand('/start', function(CommandData $data) {
 Команды могут содержать параметры, которые передаются в массив `$data->commandParams`:
 
 ```php
-TelegramRouter::onCommand('/user', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $chatId = $data->getChat()->id;
     $params = $data->commandParams; // ['123'] если пользователь написал /user 123
     
@@ -38,7 +51,7 @@ TelegramRouter::onCommand('/user', function(CommandData $data) {
     
     $userId = $params[0];
     // Обработка...
-});
+}, '*', '/user');
 ```
 
 Если пользователь введет `/user 123`, то `$data->commandParams` будет содержать `['123']`.
@@ -49,10 +62,10 @@ TelegramRouter::onCommand('/user', function(CommandData $data) {
 
 ```php
 // Команда /user:* будет обрабатывать /user с любыми параметрами
-TelegramRouter::onCommand('/user:*', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $userId = $data->commandParams[0] ?? null;
     // ...
-});
+}, '*', '/user:*');
 ```
 
 ### Доступ к данным команды
@@ -60,7 +73,7 @@ TelegramRouter::onCommand('/user:*', function(CommandData $data) {
 Объект `CommandData` предоставляет:
 
 ```php
-TelegramRouter::onCommand('/info', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     // Команда
     $command = $data->command; // '/info'
     
@@ -76,7 +89,7 @@ TelegramRouter::onCommand('/info', function(CommandData $data) {
     
     // ID бота
     $botId = $data->botId;
-});
+}, '*', '/info');
 ```
 
 ## Использование контроллеров
@@ -85,7 +98,7 @@ TelegramRouter::onCommand('/info', function(CommandData $data) {
 
 ```php
 // routes/telegram.php
-TelegramRouter::onCommand('/start', [StartController::class, 'handle']);
+TelegramRouter::onCommand([StartController::class, 'handle'], '*', '/start');
 
 // app/Telegram/Controllers/StartController.php
 namespace App\Telegram\Controllers;
@@ -107,16 +120,20 @@ class StartController
 Вы можете обработать несколько команд одним обработчиком:
 
 ```php
-TelegramRouter::onCommand(['/start', '/help', '/info'], function(CommandData $data) {
-    $command = $data->command;
-    
-    match($command) {
-        '/start' => $this->handleStart($data),
-        '/help' => $this->handleHelp($data),
-        '/info' => $this->handleInfo($data),
-        default => null,
+$handler = function(CommandData $data) {
+    $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
+    $chatId = $data->getChat()->id;
+    $message = match($data->command) {
+        'start' => 'Добро пожаловать!',
+        'help' => 'Справка по командам...',
+        'info' => 'Информация о боте...',
+        default => 'Неизвестная команда',
     };
-});
+    $telegram->sendMessage($chatId, $message);
+};
+TelegramRouter::onCommand($handler, '*', 'start');
+TelegramRouter::onCommand($handler, '*', 'help');
+TelegramRouter::onCommand($handler, '*', 'info');
 ```
 
 ## Команды с опциями параметров
@@ -124,14 +141,11 @@ TelegramRouter::onCommand(['/start', '/help', '/info'], function(CommandData $da
 Вы можете настроить обработку параметров команды:
 
 ```php
-TelegramRouter::onCommand('/search', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     // ...
-}, '*', function($command, $params) {
-    // Кастомная обработка параметров
-    return [
-        'query' => implode(' ', $params),
-        'filters' => $this->parseFilters($params),
-    ];
+}, '*', '/search', function($update, $params) {
+    // Кастомная фильтрация: маршрут сработает только если вернётся true или CommandData
+    return count($params) > 0;
 });
 ```
 
@@ -158,7 +172,7 @@ user - Информация о пользователе
 ### Команда с валидацией параметров
 
 ```php
-TelegramRouter::onCommand('/transfer', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $params = $data->commandParams;
     $chatId = $data->getChat()->id;
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
@@ -176,13 +190,13 @@ TelegramRouter::onCommand('/transfer', function(CommandData $data) {
     }
     
     // Обработка перевода...
-});
+}, '*', '/transfer');
 ```
 
 ### Команда с состояниями
 
 ```php
-TelegramRouter::onCommand('/settings', function(CommandData $data) {
+TelegramRouter::onCommand(function(CommandData $data) {
     $telegram = app(\HybridGram\Telegram\TelegramBotApi::class);
     
     // Установить состояние для следующего шага
@@ -199,7 +213,7 @@ TelegramRouter::onCommand('/settings', function(CommandData $data) {
         'Выберите настройку:',
         replyMarkup: $keyboard
     );
-});
+}, '*', '/settings');
 ```
 
 ## Что дальше?
